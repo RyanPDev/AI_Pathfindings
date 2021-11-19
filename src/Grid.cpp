@@ -41,7 +41,7 @@ int Grid::getNumCellY()
 Vector2D Grid::cell2pix(Vector2D cell)
 {
 	int offset = CELL_SIZE / 2;
-	return Vector2D(cell.x*CELL_SIZE + offset, cell.y*CELL_SIZE + offset);
+	return Vector2D(cell.x * CELL_SIZE + offset, cell.y * CELL_SIZE + offset);
 }
 
 Vector2D Grid::pix2cell(Vector2D pix)

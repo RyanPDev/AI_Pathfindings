@@ -5,6 +5,8 @@
 #include <string>
 #include <time.h>
 #include "Agent.h"
+#include "utils.h"
+
 
 class Grid
 {
@@ -16,12 +18,13 @@ private:
 	int num_cell_x;
 	int num_cell_y;
 
-	std::vector< std::vector<int> > terrain;
 
 public:
+	
+	std::vector< std::vector<int> > terrain;
+	int getNumCellX();
+	int getNumCellY();
 	Vector2D cell2pix(Vector2D cell);
 	Vector2D pix2cell(Vector2D pix);
 	bool isValidCell(Vector2D cell);
-	int getNumCellX();
-	int getNumCellY();
 };

@@ -7,8 +7,9 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 	draw_grid = false;
 	maze = new Grid("../res/maze.csv");
 
-	loadTextures("../res/maze.png", "../res/coin.png");
+	graph = new Graph(maze->terrain);
 
+	loadTextures("../res/maze.png", "../res/coin.png");
 	srand((unsigned int)time(NULL));
 
 	Agent *agent = new Agent;
