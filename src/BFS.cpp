@@ -33,7 +33,7 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 			}
 		}
 	}
-	std::cout << "Numero de nodes: " << count << std::endl;
+	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
 }
 
 void BFS::clear(std::queue<Graph::Node*>& q, Graph graph)
