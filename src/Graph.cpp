@@ -1,5 +1,9 @@
 #include "Graph.h"
 
+Graph::Graph()
+{
+}
+
 Graph::Graph(std::vector<std::vector<int>> terrain)
 {
 	std::vector<Node*> aux;

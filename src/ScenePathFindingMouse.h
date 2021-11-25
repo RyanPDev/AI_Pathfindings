@@ -23,8 +23,9 @@ public:
 private:
 	std::vector<Agent*> agents;
 	Vector2D coinPosition;
+	void ReplaceCoinPosition();
 
-	Graph* graph;
+	Graph graph;
 	Grid* maze;
 	bool draw_grid;
 

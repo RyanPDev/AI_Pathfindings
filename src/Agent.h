@@ -7,6 +7,7 @@
 #include "Path.h"
 #include "Vector2D.h"
 #include "utils.h"
+#include "Graph.h"
 
 
 class Agent
@@ -27,6 +28,7 @@ private:
 
 	// Pathfinding
 	Path path;
+	Graph graph;
 	int currentTargetIndex;
 
 	float mass;
@@ -41,7 +43,7 @@ private:
 	int sprite_h;
 
 public:
-	Agent();
+	Agent(Graph);
 	~Agent();
 	Vector2D getPosition();
 	Vector2D getTarget();

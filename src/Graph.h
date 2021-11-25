@@ -28,6 +28,7 @@ class Graph
 public:
 
 	std::vector<std::vector<Node*>> nodes;
+	Graph();
 	Graph(std::vector<std::vector<int>>);
 	void AddAllNeighbours();
 
