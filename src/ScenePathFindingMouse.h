@@ -25,9 +25,9 @@ private:
 	Vector2D coinPosition;
 	void ReplaceCoinPosition();
 
-	Graph graph;
 	Grid* maze;
 	bool draw_grid;
+	Graph graph;
 
 	void drawMaze();
 	void drawCoin();

@@ -17,6 +17,7 @@ Agent::Agent(Graph _graph) : sprite_texture(0),
 	             draw_sprite(false),
 				graph(_graph)
 {
+	pathfinding = new BFS();
 }
 
 Agent::~Agent()
