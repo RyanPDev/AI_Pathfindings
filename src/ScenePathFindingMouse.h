@@ -21,6 +21,13 @@ public:
 	void draw();
 	const char* getTitle();
 private:
+	struct Table {
+		Vector2D start;
+		Vector2D goal;
+	}table[20];
+
+	int count = 0;
+
 	std::vector<Agent*> agents;
 	Vector2D coinPosition;
 	void ReplaceCoinPosition();

@@ -18,11 +18,6 @@ Graph::Graph(std::vector<std::vector<int>> terrain)
 		aux.clear();
 	}
 	AddAllNeighbours();
-	for (int i = 0; i < nodes[17][26]->neighbours.size(); i++)
-	{
-		std::cout << nodes[17][26]->neighbours[i]->weight << std::endl;
-	}
-	DrawGraph();
 }
 
 void Graph::AddAllNeighbours()
@@ -74,17 +69,17 @@ void Graph::AddAllNeighbours()
 		}
 }
 
-void Graph::DrawGraph()
-{
-	for (int i = 0; i < nodes.size(); i++)
-	{
-		for (int j = 0; j < nodes[0].size(); j++)
-		{
-			if (nodes[i][j]->isValid)
-				std::cout << " ";
-			else
-				std::cout << char(254);
-		}
-		std::cout << std::endl;
-	}
-}
+//void Graph::DrawGraph()
+//{
+//	for (int i = 0; i < nodes.size(); i++)
+//	{
+//		for (int j = 0; j < nodes[0].size(); j++)
+//		{
+//			if (nodes[i][j]->isValid)
+//				std::cout << " ";
+//			else
+//				std::cout << char(254);
+//		}
+//		std::cout << std::endl;
+//	}
+//}

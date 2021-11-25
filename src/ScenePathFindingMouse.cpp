@@ -4,6 +4,27 @@ using namespace std;
 
 ScenePathFindingMouse::ScenePathFindingMouse()
 {
+	//table[0].start = { 24, 13 };
+	//table[1].start  = { 11, 22 };
+	//table[2].start  = { 31, 2 };
+	//table[3].start  = { 25, 11 };
+	//table[4].start  = { 8, 7 };
+	//table[5].start  = { 9, 19 };
+	//table[6].start  = { 32, 18 };
+	//table[7].start  = { 26, 7 };
+	//table[8].start  = { 25, 21 };
+	//table[9].start  = { 15, 9 };
+	//table[10].start  = { 20, 1 };
+	//table[11].start  = { 21, 7 };
+	//table[12].start  = { 13, 2 };
+	//table[13].start  = { 3, 4 };
+	//table[14].start  = { 32, 6 };
+	//table[15].start  = { 16, 16 };
+	//table[16].start  = { 10, 17 };
+	//table[17].start  = { 13, 11 };
+	//table[18].start  = { 17, 20 };
+	//table[19].start  = { 20, 23 };
+
 	draw_grid = false;
 	maze = new Grid("../res/maze.csv");
 
@@ -74,6 +95,7 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		// if we have arrived to the coin, replace it in a random cell!
 		if ((maze->pix2cell(a->getPosition()) == coinPosition)) //
 		{
+			count++;
 			ReplaceCoinPosition();
 			a->clearPath();
 			a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);

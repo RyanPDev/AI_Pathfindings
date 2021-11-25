@@ -25,8 +25,6 @@ public:
 			cameFrom = nullptr;
 		}
 
-		
-
 		Vector2D cell2pix(Vector2D cell)
 		{
 			int offset = CELL_SIZE / 2;
