@@ -1,16 +1,14 @@
-#include "Dijkstra.h"
+#include "AStar.h"
 
-Dijkstra::Dijkstra()
+AStar::AStar()
 {
-
 }
 
-Dijkstra::~Dijkstra()
+AStar::~AStar()
 {
-
 }
 
-void Dijkstra::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
+void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 {
 	float newCost = 0;
 	count = 1;
@@ -36,6 +34,7 @@ void Dijkstra::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D g
 
 		for (Graph::Node* next : current->neighbours)
 		{
+			
 			newCost = current->costSoFar + next->weight;
 			//std::cout << "Current: " << current->costSoFar << "Next: " << next->costSoFar << "NewCost: " << newCost << std::endl;
 			if (next->cameFrom == nullptr || newCost < next->costSoFar)
@@ -45,6 +44,10 @@ void Dijkstra::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D g
 					count++;
 				}
 				next->costSoFar = newCost;
+				if (next->heuristic == 0)
+					next->heuristic = Heuristic(pix2cell(next->position),goal);
+
+				next->priority = newCost + next->heuristic;
 				next->cameFrom = current;
 				frontier.push(next);
 				//std::cout << "SIZE: " << frontier.size() << std::endl;
@@ -54,15 +57,24 @@ void Dijkstra::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D g
 	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
 }
 
-void Dijkstra::Clear(std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, CompareWeight >& q, Graph graph)
+void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, ComparePriority>& q, Graph graph)
 {
 	for (int i = 0; i < graph.nodes.size(); i++)
 		for (int j = 0; j < graph.nodes[i].size(); j++)
 		{
 			graph.nodes[i][j]->cameFrom = nullptr;
 			graph.nodes[i][j]->costSoFar = 0;
+			graph.nodes[i][j]->heuristic = 0;
+			graph.nodes[i][j]->priority = 0;
+
 		}
 
-	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, CompareWeight > empty;
+	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > empty;
 	std::swap(q, empty);
+}
+float AStar::Heuristic(Vector2D node, Vector2D goal)
+{
+	float dx = abs(node.x - goal.x);
+	float dy = abs(node.y - goal.y);
+	return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
 }
