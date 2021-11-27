@@ -32,7 +32,6 @@ void Greedy::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goa
 
 		for (Graph::Node* next : current->neighbours)
 		{
-			//std::cout << "Current: " << current->costSoFar << "Next: " << next->costSoFar << "NewCost: " << newCost << std::endl;
 			if (next->cameFrom == nullptr)
 			{
 				count++;

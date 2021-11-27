@@ -26,7 +26,7 @@ private:
 		Vector2D goal;
 	}table[20];
 
-	int count = 0;
+	int count = 1;
 
 	std::vector<Agent*> agents;
 	Vector2D coinPosition;

@@ -19,6 +19,7 @@ Agent::Agent(Graph _graph) : sprite_texture(0),
 {
 	//pathfinding = new BFS();
 	//pathfinding = new Dijkstra();
+	//pathfinding = new Greedy();
 	pathfinding = new AStar();
 }
 

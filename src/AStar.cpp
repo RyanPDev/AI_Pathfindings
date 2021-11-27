@@ -34,23 +34,17 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 
 		for (Graph::Node* next : current->neighbours)
 		{
-			
 			newCost = current->costSoFar + next->weight;
-			//std::cout << "Current: " << current->costSoFar << "Next: " << next->costSoFar << "NewCost: " << newCost << std::endl;
 			if (next->cameFrom == nullptr || newCost < next->costSoFar)
 			{
-				if (next->cameFrom == nullptr)
-				{
-					count++;
-				}
+				count++;
 				next->costSoFar = newCost;
 				if (next->heuristic == 0)
-					next->heuristic = Heuristic(pix2cell(next->position),goal);
+					next->heuristic = Heuristic(pix2cell(next->position), goal);
 
 				next->priority = newCost + next->heuristic;
 				next->cameFrom = current;
 				frontier.push(next);
-				//std::cout << "SIZE: " << frontier.size() << std::endl;
 			}
 		}
 	}
