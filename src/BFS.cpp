@@ -19,7 +19,7 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 		if (pix2cell(current->position) == goal) //early exit
 		{
 			GetPath(path, start, current);
-			clear(frontier, graph);
+			Clear(frontier, graph);
 			break;
 		}
 
@@ -36,7 +36,7 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
 }
 
-void BFS::clear(std::queue<Graph::Node*>& q, Graph graph)
+void BFS::Clear(std::queue<Graph::Node*>& q, Graph graph)
 {
 	for (int i = 0; i < graph.nodes.size(); i++)
 		for (int j = 0; j < graph.nodes[i].size(); j++)

@@ -135,6 +135,7 @@
     <ClCompile Include="..\src\BFS.cpp" />
     <ClCompile Include="..\src\Dijkstra.cpp" />
     <ClCompile Include="..\src\Graph.cpp" />
+    <ClCompile Include="..\src\Greedy.cpp" />
     <ClCompile Include="..\src\Grid.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Pathfinding.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="..\src\BFS.h" />
     <ClInclude Include="..\src\Dijkstra.h" />
     <ClInclude Include="..\src\Graph.h" />
+    <ClInclude Include="..\src\Greedy.h" />
     <ClInclude Include="..\src\Grid.h" />
     <ClInclude Include="..\src\Path.h" />
     <ClInclude Include="..\src\Pathfinding.h" />

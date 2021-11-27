@@ -11,6 +11,7 @@
 #include "Pathfinding.h"
 #include "BFS.h"
 #include "Dijkstra.h"
+#include "Greedy.h"
 
 class Agent
 {
