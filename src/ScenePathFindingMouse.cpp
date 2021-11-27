@@ -24,14 +24,16 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 		rand_cell = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
 
 	// set the coin in a random cell (but at least 3 cells far from the agent)
-	//ReplaceCoinPosition();
-	coinPosition = Vector2D(18, 22);
+	ReplaceCoinPosition();
+
 	for (Agent* a : agents)
 	{
-		//a->setPosition(maze->cell2pix(rand_cell));
-		a->setPosition(Vector2D(70, 70));
+		std::cout << "Instancia " << count << ":" << std::endl;
+		count++;
+		a->setPosition(maze->cell2pix(rand_cell));
 		a->clearPath();
 		a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
+
 	}
 }
 
@@ -58,13 +60,6 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		break;
 	case SDL_MOUSEMOTION:
 	case SDL_MOUSEBUTTONDOWN:
-		//if (event->button.button == SDL_BUTTON_LEFT)
-		//{
-		//	Vector2D cell = maze->pix2cell(Vector2D((float)(event->button.x), (float)(event->button.y)));
-		//	if (maze->isValidCell(cell)) {
-		//		agents[0]->addPathPoint(maze->cell2pix(cell));
-		//	}
-		//}
 		break;
 	default:
 		break;
@@ -76,10 +71,12 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		// if we have arrived to the coin, replace it in a random cell!
 		if ((maze->pix2cell(a->getPosition()) == coinPosition)) //
 		{
+			std::cout << "Instancia " << count << ":" << std::endl;
 			count++;
 			ReplaceCoinPosition();
 			a->clearPath();
 			a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
+			
 		}
 	}
 }

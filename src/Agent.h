@@ -12,6 +12,7 @@
 #include "BFS.h"
 #include "Dijkstra.h"
 #include "Greedy.h"
+#include "AStar.h"
 
 class Agent
 {

@@ -1,14 +1,16 @@
-#include "Greedy.h"
+#include "AStar.h"
 
-Greedy::Greedy()
+AStar::AStar()
 {
 }
 
-Greedy::~Greedy()
+AStar::~AStar()
 {
 }
-void Greedy::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
+
+void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 {
+	float newCost = 0;
 	count = 1;
 	start = pix2cell(start);
 
@@ -32,33 +34,39 @@ void Greedy::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goa
 
 		for (Graph::Node* next : current->neighbours)
 		{
-			if (next->cameFrom == nullptr)
+			newCost = current->costSoFar + next->weight;
+			if (next->cameFrom == nullptr || newCost < next->costSoFar)
 			{
 				count++;
-				next->heuristic = Heuristic(pix2cell(next->position), goal);
+				next->costSoFar = newCost;
+				if (next->heuristic == 0)
+					next->heuristic = Heuristic(pix2cell(next->position), goal);
+
+				next->priority = newCost + next->heuristic;
 				next->cameFrom = current;
 				frontier.push(next);
-				//std::cout << "SIZE: " << frontier.size() << std::endl;
 			}
 		}
 	}
 	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
 }
 
-void Greedy::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, CompareHeuristic>& q, Graph graph)
+void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, ComparePriority>& q, Graph graph)
 {
 	for (int i = 0; i < graph.nodes.size(); i++)
 		for (int j = 0; j < graph.nodes[i].size(); j++)
 		{
 			graph.nodes[i][j]->cameFrom = nullptr;
+			graph.nodes[i][j]->costSoFar = 0;
 			graph.nodes[i][j]->heuristic = 0;
+			graph.nodes[i][j]->priority = 0;
+
 		}
 
-	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, CompareHeuristic > empty;
+	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > empty;
 	std::swap(q, empty);
 }
-
-float Greedy::Heuristic(Vector2D node, Vector2D goal)
+float AStar::Heuristic(Vector2D node, Vector2D goal)
 {
 	float dx = abs(node.x - goal.x);
 	float dy = abs(node.y - goal.y);

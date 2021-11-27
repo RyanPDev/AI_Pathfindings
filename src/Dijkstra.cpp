@@ -37,17 +37,12 @@ void Dijkstra::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D g
 		for (Graph::Node* next : current->neighbours)
 		{
 			newCost = current->costSoFar + next->weight;
-			//std::cout << "Current: " << current->costSoFar << "Next: " << next->costSoFar << "NewCost: " << newCost << std::endl;
 			if (next->cameFrom == nullptr || newCost < next->costSoFar)
 			{
-				if (next->cameFrom == nullptr)
-				{
-					count++;
-				}
-				next->costSoFar = current->costSoFar + next->weight;
+				count++;
+				next->costSoFar = newCost;
 				next->cameFrom = current;
 				frontier.push(next);
-				//std::cout << "SIZE: " << frontier.size() << std::endl;
 			}
 		}
 	}
