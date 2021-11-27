@@ -5,14 +5,14 @@ BFS::~BFS() {}
 
 void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 {
-	int count = 0;
+	count = 1;
 	start = pix2cell(start);
 
 	graph.nodes[start.y][start.x]->cameFrom = graph.nodes[start.y][start.x];
 	frontier.push(graph.nodes[start.y][start.x]);
 	Graph::Node* current = nullptr;
 	while (!frontier.empty())
-	{
+	{	
 		current = frontier.front();
 		frontier.pop();
 
@@ -27,9 +27,9 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 		{
 			if (next->cameFrom == nullptr)
 			{
-				frontier.push(next);
 				count++;
 				next->cameFrom = current;
+				frontier.push(next);
 			}
 		}
 	}

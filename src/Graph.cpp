@@ -28,6 +28,15 @@ void Graph::AddAllNeighbours()
 			if (nodes[i][j]->isValid) // the node is not wall
 			{
 				// 8 directions
+				if ((j - 1) >= 0 && nodes[i][j - 1]->isValid) // left neighbour
+				{
+					nodes[i][j]->neighbours.push_back(nodes[i][j - 1]);
+				}
+
+				if ((j + 1) < nodes[0].size() && nodes[i][j + 1]->isValid) // right neighbour
+				{
+					nodes[i][j]->neighbours.push_back(nodes[i][j + 1]);
+				}
 				if ((i - 1) >= 0 && nodes[i - 1][j]->isValid) // up neighbour
 				{
 					nodes[i][j]->neighbours.push_back(nodes[i - 1][j]);
@@ -56,15 +65,6 @@ void Graph::AddAllNeighbours()
 					}
 				}
 
-				if ((j - 1) >= 0 && nodes[i][j - 1]->isValid) // left neighbour
-				{
-					nodes[i][j]->neighbours.push_back(nodes[i][j - 1]);
-				}
-
-				if ((j + 1) < nodes[0].size() && nodes[i][j + 1]->isValid) // right neighbour
-				{
-					nodes[i][j]->neighbours.push_back(nodes[i][j + 1]);
-				}
 			}
 		}
 }
