@@ -14,7 +14,7 @@ public:
 
 	struct Node {
 		Vector2D position;
-		float weight;
+		float weight, heuristic, priority;
 		std::vector<Node*> neighbours;
 		Node* cameFrom; //parent node
 		int costSoFar; // cost so far for each node
@@ -25,6 +25,7 @@ public:
 			isValid = weight != 0;
 			cameFrom = nullptr;
 			costSoFar = 0;
+			heuristic = priority = 0;
 		}
 
 		Vector2D cell2pix(Vector2D cell)
