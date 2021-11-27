@@ -17,12 +17,14 @@ public:
 		float weight;
 		std::vector<Node*> neighbours;
 		Node* cameFrom; //parent node
+		int costSoFar; // cost so far for each node
 		bool isValid;
 		Node(Vector2D cellPos, float _weight) : weight(_weight)
 		{
 			position = cell2pix(cellPos);
 			isValid = weight != 0;
 			cameFrom = nullptr;
+			costSoFar = 0;
 		}
 
 		Vector2D cell2pix(Vector2D cell)

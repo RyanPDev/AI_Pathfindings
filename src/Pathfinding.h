@@ -9,7 +9,7 @@ class Pathfinding
 {
 protected:
 	void GetPath(Path&, Vector2D, Graph::Node*);
-
+	int count;
 public:
 	Pathfinding();
 	~Pathfinding();

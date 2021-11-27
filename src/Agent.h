@@ -10,6 +10,7 @@
 #include "Graph.h"
 #include "Pathfinding.h"
 #include "BFS.h"
+#include "Dijkstra.h"
 
 class Agent
 {

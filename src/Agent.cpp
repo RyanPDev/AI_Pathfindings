@@ -17,7 +17,8 @@ Agent::Agent(Graph _graph) : sprite_texture(0),
 	             draw_sprite(false),
 				graph(_graph)
 {
-	pathfinding = new BFS();
+	//pathfinding = new BFS();
+	pathfinding = new Dijkstra();
 }
 
 Agent::~Agent()
@@ -172,9 +173,7 @@ void Agent::draw()
 	{
 		draw_circle(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, 15, 255, 255, 255, 255);
 		SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, (int)(position.x+15*cos(orientation*DEG2RAD)), (int)(position.y+15*sin(orientation*DEG2RAD)));
-	}
-
-	
+	}	
 }
 
 bool Agent::loadSpriteTexture(char* filename, int _num_frames)
