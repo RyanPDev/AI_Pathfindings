@@ -20,17 +20,15 @@ public:
 	void update(float dtime, SDL_Event* event);
 	void draw();
 	const char* getTitle();
-private:
-	struct Table {
-		Vector2D start;
-		Vector2D goal;
-	}table[20];
 
+private:
 	int count = 1;
 
 	std::vector<Agent*> agents;
-	Vector2D coinPosition;
-	void ReplaceCoinPosition();
+	const int NUM_AGENTS = 2;
+	const int MAX_COINS = 5;
+	std::vector<Vector2D*> coinsPosition;
+	void ReplaceCoinPosition(Vector2D&);
 
 	Grid* maze;
 	bool draw_grid;
@@ -41,5 +39,4 @@ private:
 	SDL_Texture* background_texture;
 	SDL_Texture* coin_texture;
 	bool loadTextures(char* filename_bg, char* filename_coin);
-
 };

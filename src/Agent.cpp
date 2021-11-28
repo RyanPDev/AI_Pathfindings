@@ -17,10 +17,10 @@ Agent::Agent(Graph _graph) : sprite_texture(0),
 	             draw_sprite(false),
 				graph(_graph)
 {
-	//pathfinding = new BFS();
+	pathfinding = new BFS();
 	//pathfinding = new Dijkstra();
 	//pathfinding = new Greedy();
-	pathfinding = new AStar();
+	//pathfinding = new AStar();
 }
 
 Agent::~Agent()
@@ -145,6 +145,25 @@ void Agent::clearPath()
 void Agent::setCurrentTargetIndex(int idx)
 {
 	currentTargetIndex = idx;
+}
+
+void Agent::ChooseNewGoal(std::vector<Vector2D*> coins)
+{
+	clearPath();
+
+	float auxDistance = 100000000;
+	for (Vector2D* c : coins)
+	{
+		float d = pathfinding->Heuristic(pathfinding->pix2cell(position), *c);
+
+		if (d < auxDistance)
+		{
+			auxDistance = d;
+			currentGoal = c;
+		}
+	}
+
+	pathfinding->CalculatePath(graph,path, position, *currentGoal);
 }
 
 void Agent::draw()

@@ -12,14 +12,10 @@ class Greedy :
 			}
 		};
 		std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, CompareHeuristic > frontier;
-		//We use Octile diagonal distance
-		const float D = 1;
-		const float D2 = sqrt(2);
 	public:
 		Greedy();
 		~Greedy();
 		void CalculatePath(Graph, Path&, Vector2D, Vector2D);
-		float Heuristic(Vector2D, Vector2D);
 		
 		void Clear(std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, CompareHeuristic >&q, Graph graph);
 };

@@ -25,6 +25,7 @@ public:
 		virtual void applySteeringForce(Agent* agent, float dtime) {};
 	};
 	Pathfinding* pathfinding;
+	Vector2D* currentGoal;
 
 private:
 	SteeringBehavior* steering_behaviour;
@@ -69,6 +70,8 @@ public:
 	void clearPath();
 	void update(float dtime, SDL_Event* event);
 	void draw();
-	bool Agent::loadSpriteTexture(char* filename, int num_frames = 1);
+	bool loadSpriteTexture(char* filename, int num_frames = 1);
+
+	void ChooseNewGoal(std::vector<Vector2D*> coins);
 
 };

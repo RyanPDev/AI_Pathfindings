@@ -12,28 +12,38 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 	loadTextures("../res/maze.png", "../res/coin.png");
 	srand((unsigned int)time(NULL));
 
-	Agent* agent = new Agent(graph);
-	agent->loadSpriteTexture("../res/soldier.png", 4);
-	agent->setBehavior(new PathFollowing);
-	agent->setTarget(Vector2D(-20, -20));
-	agents.push_back(agent);
+	for (int i = 0; i < NUM_AGENTS; i++)
+	{
+		Agent* agent = new Agent(graph);
+		agent->loadSpriteTexture("../res/soldier.png", 4);
+		agent->setBehavior(new PathFollowing);
+		agent->setTarget(Vector2D(-20, -20));
+		agents.push_back(agent);
+	}
 
-	// set agent position coords to the center of a random cell
+	for (int i = 0; i < MAX_COINS; i++)
+	{
+		Vector2D* c = new Vector2D;
+
+		coinsPosition.push_back(c);
+	}
+
+	for (Vector2D* c : coinsPosition)
+	{
+		ReplaceCoinPosition(*c);
+	}
+
 	Vector2D rand_cell(-1, -1);
-	while (!maze->isValidCell(rand_cell))
-		rand_cell = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
-
-	// set the coin in a random cell (but at least 3 cells far from the agent)
-	ReplaceCoinPosition();
-
 	for (Agent* a : agents)
 	{
+		rand_cell = (-1, -1);
+		while (!maze->isValidCell(rand_cell))
+			rand_cell = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
 		std::cout << "Instancia " << count << ":" << std::endl;
 		count++;
+		// set agent position coords to the center of a random cell
 		a->setPosition(maze->cell2pix(rand_cell));
-		a->clearPath();
-		a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
-
+		a->ChooseNewGoal(coinsPosition);
 	}
 }
 
@@ -68,24 +78,33 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 	for (Agent* a : agents)
 	{
 		a->update(dtime, event);
-		// if we have arrived to the coin, replace it in a random cell!
-		if ((maze->pix2cell(a->getPosition()) == coinPosition)) //
+
+		if (maze->pix2cell(a->getPosition()) == *a->currentGoal)
 		{
 			std::cout << "Instancia " << count << ":" << std::endl;
 			count++;
-			ReplaceCoinPosition();
-			a->clearPath();
-			a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
-			
+			for (Vector2D* c : coinsPosition)
+			{
+				if (a->currentGoal == c)
+				{
+					ReplaceCoinPosition(*c);
+					break;
+				}
+			}
+			for (Agent* a_ : agents) a_->ChooseNewGoal(coinsPosition);
 		}
 	}
 }
 
-void ScenePathFindingMouse::ReplaceCoinPosition()
+void ScenePathFindingMouse::ReplaceCoinPosition(Vector2D& coinPosition)
 {
 	coinPosition = Vector2D(-1, -1);
+	// set the coin in a random cell (but at least 3 cells far from the agent)
+
 	while ((!maze->isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, maze->pix2cell(agents[0]->getPosition())) < 3))
+	{
 		coinPosition = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
+	}
 }
 
 void ScenePathFindingMouse::draw()
@@ -144,10 +163,13 @@ void ScenePathFindingMouse::drawMaze()
 
 void ScenePathFindingMouse::drawCoin()
 {
-	Vector2D coin_coords = maze->cell2pix(coinPosition);
-	int offset = CELL_SIZE / 2;
-	SDL_Rect dstrect = { (int)coin_coords.x - offset, (int)coin_coords.y - offset, CELL_SIZE, CELL_SIZE };
-	SDL_RenderCopy(TheApp::Instance()->getRenderer(), coin_texture, NULL, &dstrect);
+	for (Vector2D* c : coinsPosition)
+	{
+		Vector2D coin_coords = maze->cell2pix(*c);
+		int offset = CELL_SIZE / 2;
+		SDL_Rect dstrect = { (int)coin_coords.x - offset, (int)coin_coords.y - offset, CELL_SIZE, CELL_SIZE };
+		SDL_RenderCopy(TheApp::Instance()->getRenderer(), coin_texture, NULL, &dstrect);
+	}
 }
 
 bool ScenePathFindingMouse::loadTextures(char* filename_bg, char* filename_coin)
@@ -174,24 +196,3 @@ bool ScenePathFindingMouse::loadTextures(char* filename_bg, char* filename_coin)
 
 	return true;
 }
-
-//table[0].start = { 24, 13 };
-//table[1].start  = { 11, 22 };
-//table[2].start  = { 31, 2 };
-//table[3].start  = { 25, 11 };
-//table[4].start  = { 8, 7 };
-//table[5].start  = { 9, 19 };
-//table[6].start  = { 32, 18 };
-//table[7].start  = { 26, 7 };
-//table[8].start  = { 25, 21 };
-//table[9].start  = { 15, 9 };
-//table[10].start  = { 20, 1 };
-//table[11].start  = { 21, 7 };
-//table[12].start  = { 13, 2 };
-//table[13].start  = { 3, 4 };
-//table[14].start  = { 32, 6 };
-//table[15].start  = { 16, 16 };
-//table[16].start  = { 10, 17 };
-//table[17].start  = { 13, 11 };
-//table[18].start  = { 17, 20 };
-//table[19].start  = { 20, 23 };

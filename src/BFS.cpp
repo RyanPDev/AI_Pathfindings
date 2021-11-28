@@ -7,7 +7,13 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 {
 	count = 1;
 	start = pix2cell(start);
+	while(graph.nodes[start.y][start.x] == nullptr)
+	{
+		Vector2D aux = goal - start;
+		aux.Normalize();
 
+		start += aux;
+	}
 	graph.nodes[start.y][start.x]->cameFrom = graph.nodes[start.y][start.x];
 	frontier.push(graph.nodes[start.y][start.x]);
 	Graph::Node* current = nullptr;
@@ -33,7 +39,7 @@ void BFS::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 			}
 		}
 	}
-	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
+	std::cout << "Numero de nodes explorats: " << count << std::endl;
 }
 
 void BFS::Clear(std::queue<Graph::Node*>& q, Graph graph)

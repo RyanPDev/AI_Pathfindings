@@ -13,6 +13,13 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 	float newCost = 0;
 	count = 1;
 	start = pix2cell(start);
+	while(graph.nodes[start.y][start.x] == nullptr)
+	{
+		Vector2D aux = goal - start;
+		aux.Normalize();
+
+		start += aux;
+	}
 
 	graph.nodes[start.y][start.x]->cameFrom = graph.nodes[start.y][start.x];
 
@@ -48,7 +55,7 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 			}
 		}
 	}
-	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
+	std::cout << "Numero de nodes explorats: " << count << std::endl;
 }
 
 void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, ComparePriority>& q, Graph graph)
@@ -65,10 +72,4 @@ void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, C
 
 	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > empty;
 	std::swap(q, empty);
-}
-float AStar::Heuristic(Vector2D node, Vector2D goal)
-{
-	float dx = abs(node.x - goal.x);
-	float dy = abs(node.y - goal.y);
-	return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
 }
