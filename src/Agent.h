@@ -12,7 +12,8 @@
 #include "BFS.h"
 #include "Dijkstra.h"
 #include "Greedy.h"
-#include "AStar.h"
+#include "ModifiedAStar.h"
+#include "Astar.h"
 
 class Agent
 {
@@ -25,6 +26,7 @@ public:
 		virtual void applySteeringForce(Agent* agent, float dtime) {};
 	};
 	Pathfinding* pathfinding;
+	Vector2D* currentGoal;
 
 private:
 	SteeringBehavior* steering_behaviour;
@@ -45,9 +47,14 @@ private:
 	int sprite_num_frames;
 	int sprite_w;
 	int sprite_h;
+	Vector2D cell2pix(Vector2D cell)
+	{
+		int offset = CELL_SIZE / 2;
+		return Vector2D(cell.x * CELL_SIZE + offset, cell.y * CELL_SIZE + offset);
+	}
 
 public:
-	Agent(Graph);
+	Agent(Graph,bool);
 	~Agent();
 	Vector2D getPosition();
 	Vector2D getTarget();
@@ -68,7 +75,9 @@ public:
 	Vector2D getPathPoint(int idx);
 	void clearPath();
 	void update(float dtime, SDL_Event* event);
-	void draw();
-	bool Agent::loadSpriteTexture(char* filename, int num_frames = 1);
+	void draw(bool);
+	bool loadSpriteTexture(char* filename, int num_frames = 1);
+	void ChooseNewGoal(std::vector<Vector2D*> coins);
+	bool isInVersusScene = false;
 
 };

@@ -1,7 +1,7 @@
 #pragma once
 #include "Pathfinding.h"
 #include <queue>
-class Astar :
+class ModifiedAStar :
     public Pathfinding
 {
 private:
@@ -13,10 +13,12 @@ private:
 	};
 	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > frontier;
 
+	const float alpha = 0.9;
+	const float beta = 0.1;
 
 public:
-	Astar();
-	~Astar();
+	ModifiedAStar();
+	~ModifiedAStar();
 	void CalculatePath(Graph, Path&, Vector2D, Vector2D);
 	void Clear(std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority >& q, Graph graph);
 };

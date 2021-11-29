@@ -2,25 +2,31 @@
 
 using namespace std;
 
-Agent::Agent(Graph _graph) : sprite_texture(0),
-                 position(Vector2D(100, 100)),
-	             target(Vector2D(1000, 100)),
-	             velocity(Vector2D(0,0)),
-	             currentTargetIndex(-1),
-				 mass(0.1f),
-				 max_force(150),
-				 max_velocity(200),
-				 orientation(0),
-				 sprite_num_frames(0),
-	             sprite_w(0),
-	             sprite_h(0),
-	             draw_sprite(false),
-				graph(_graph)
+Agent::Agent(Graph _graph, bool _isInVersusScene) : sprite_texture(0),
+position(Vector2D(100, 100)),
+target(Vector2D(1000, 100)),
+velocity(Vector2D(0, 0)),
+currentTargetIndex(-1),
+mass(0.1f),
+max_force(150),
+max_velocity(200),
+orientation(0),
+sprite_num_frames(0),
+sprite_w(0),
+sprite_h(0),
+draw_sprite(false),
+graph(_graph),
+isInVersusScene(_isInVersusScene)
 {
-	//pathfinding = new BFS();
-	//pathfinding = new Dijkstra();
-	//pathfinding = new Greedy();
-	pathfinding = new AStar();
+	if (isInVersusScene)
+		pathfinding = new ModifiedAStar();
+	else
+	{
+		pathfinding = new BFS();
+		//pathfinding = new Dijkstra();
+		//pathfinding = new Greedy();
+		//pathfinding = new AStar();
+	}
 }
 
 Agent::~Agent()
@@ -31,7 +37,7 @@ Agent::~Agent()
 		delete (steering_behaviour);
 }
 
-void Agent::setBehavior(SteeringBehavior *behavior)
+void Agent::setBehavior(SteeringBehavior* behavior)
 {
 	steering_behaviour = behavior;
 }
@@ -81,15 +87,12 @@ void Agent::setVelocity(Vector2D _velocity)
 	velocity = _velocity;
 }
 
-void Agent::update(float dtime, SDL_Event *event)
+void Agent::update(float dtime, SDL_Event* event)
 {
-
-	//cout << "agent update:" << endl;
-
 	switch (event->type) {
 		/* Keyboard & Mouse events */
 	case SDL_KEYDOWN:
-		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
+		if (event->key.keysym.scancode == SDL_SCANCODE_S)
 			draw_sprite = !draw_sprite;
 		break;
 	default:
@@ -98,7 +101,7 @@ void Agent::update(float dtime, SDL_Event *event)
 
 	// Apply the steering behavior
 	steering_behaviour->applySteeringForce(this, dtime);
-	
+
 	// Update orientation
 	if (velocity.Length())
 		orientation = (float)(atan2(velocity.y, velocity.x) * RAD2DEG);
@@ -110,7 +113,6 @@ void Agent::update(float dtime, SDL_Event *event)
 	if (position.y > TheApp::Instance()->getWinSize().y) position.y = 0;
 }
 
-
 void Agent::addPathPoint(Vector2D point)
 {
 	if (path.points.size() > 0)
@@ -119,7 +121,6 @@ void Agent::addPathPoint(Vector2D point)
 
 	path.points.push_back(point);
 }
-
 
 int Agent::getCurrentTargetIndex()
 {
@@ -147,42 +148,68 @@ void Agent::setCurrentTargetIndex(int idx)
 	currentTargetIndex = idx;
 }
 
-void Agent::draw()
+void Agent::ChooseNewGoal(std::vector<Vector2D*> coins)
+{
+	float auxDistance = 100000000;
+	Vector2D start;
+	for (Vector2D* c : coins)
+	{
+		// We use diagonal octal heuristic to know which coin take
+		float d = pathfinding->Heuristic(pix2cell(position), *c);
+
+		if (d < auxDistance)
+		{
+			auxDistance = d;
+			currentGoal = c;
+		}
+	}
+
+	if (currentTargetIndex >= 0)
+		start = getPathPoint(currentTargetIndex);
+	else
+		start = position;
+
+	clearPath();
+	pathfinding->CalculatePath(graph, path, start, *currentGoal);
+}
+
+void Agent::draw(bool drawCircles)
 {
 	// Path
-	for (int i = 0; i < (int)path.points.size(); i++)
-	{
-		draw_circle(TheApp::Instance()->getRenderer(), (int)(path.points[i].x), (int)(path.points[i].y), 15, 255, 255, 0, 255);
-		if (i > 0)
-			SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)(path.points[i - 1].x), (int)(path.points[i - 1].y), (int)(path.points[i].x), (int)(path.points[i].y));
-	}
+	if (drawCircles)
+		for (int i = 0; i < (int)path.points.size(); i++)
+		{
+			draw_circle(TheApp::Instance()->getRenderer(), (int)(path.points[i].x), (int)(path.points[i].y), 15, 255, 255, 0, 255);
+			if (i > 0)
+				SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)(path.points[i - 1].x), (int)(path.points[i - 1].y), (int)(path.points[i].x), (int)(path.points[i].y));
+		}
 
 	if (draw_sprite)
 	{
 		Uint32 sprite;
-		
+
 		if (velocity.Length() < 5.0)
 			sprite = 1;
 		else
-			sprite = (int)(SDL_GetTicks() / (-0.1*velocity.Length() + 250)) % sprite_num_frames;
-		
+			sprite = (int)(SDL_GetTicks() / (-0.1 * velocity.Length() + 250)) % sprite_num_frames;
+
 		SDL_Rect srcrect = { (int)sprite * sprite_w, 0, sprite_w, sprite_h };
 		SDL_Rect dstrect = { (int)position.x - (sprite_w / 2), (int)position.y - (sprite_h / 2), sprite_w, sprite_h };
 		SDL_Point center = { sprite_w / 2, sprite_h / 2 };
-		SDL_RenderCopyEx(TheApp::Instance()->getRenderer(), sprite_texture, &srcrect, &dstrect, orientation+90, &center, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(TheApp::Instance()->getRenderer(), sprite_texture, &srcrect, &dstrect, orientation + 90, &center, SDL_FLIP_NONE);
 	}
-	else 
+	else
 	{
 		draw_circle(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, 15, 255, 255, 255, 255);
-		SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, (int)(position.x+15*cos(orientation*DEG2RAD)), (int)(position.y+15*sin(orientation*DEG2RAD)));
-	}	
+		SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, (int)(position.x + 15 * cos(orientation * DEG2RAD)), (int)(position.y + 15 * sin(orientation * DEG2RAD)));
+	}
 }
 
 bool Agent::loadSpriteTexture(char* filename, int _num_frames)
 {
 	if (_num_frames < 1) return false;
 
-	SDL_Surface *image = IMG_Load(filename);
+	SDL_Surface* image = IMG_Load(filename);
 	if (!image) {
 		cout << "IMG_Load: " << IMG_GetError() << endl;
 		return false;

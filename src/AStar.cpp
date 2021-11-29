@@ -1,29 +1,25 @@
-#include "AStar.h"
+#include "Astar.h"
 
-AStar::AStar()
+Astar::Astar()
 {
 }
 
-AStar::~AStar()
+Astar::~Astar()
 {
 }
 
-void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
+void Astar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal)
 {
 	float newCost = 0;
 	count = 1;
 	start = pix2cell(start);
-
 	graph.nodes[start.y][start.x]->cameFrom = graph.nodes[start.y][start.x];
-
 	frontier.push(graph.nodes[start.y][start.x]);
-
 	Graph::Node* current = nullptr;
-
-	while (!frontier.empty())
+	while (!frontier.empty()) // while frontier is not empty
 	{
 		current = frontier.top();
-		frontier.pop();
+		frontier.pop(); // take node out of frontier
 
 		if (pix2cell(current->position) == goal) //early exit
 		{
@@ -51,11 +47,12 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 	std::cout << "Numero de nodes afegits a la frontera: " << count << std::endl;
 }
 
-void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, ComparePriority>& q, Graph graph)
+void Astar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, ComparePriority>& q, Graph graph)
 {
 	for (int i = 0; i < graph.nodes.size(); i++)
 		for (int j = 0; j < graph.nodes[i].size(); j++)
 		{
+			//Reset Node
 			graph.nodes[i][j]->cameFrom = nullptr;
 			graph.nodes[i][j]->costSoFar = 0;
 			graph.nodes[i][j]->heuristic = 0;
@@ -65,10 +62,4 @@ void AStar::Clear(std::priority_queue<Graph::Node*, std::vector<Graph::Node*>, C
 
 	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > empty;
 	std::swap(q, empty);
-}
-float AStar::Heuristic(Vector2D node, Vector2D goal)
-{
-	float dx = abs(node.x - goal.x);
-	float dy = abs(node.y - goal.y);
-	return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
 }

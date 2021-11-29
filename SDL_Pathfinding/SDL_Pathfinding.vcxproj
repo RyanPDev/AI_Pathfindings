@@ -132,7 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Agent.cpp" />
-    <ClCompile Include="..\src\AStar.cpp" />
+    <ClCompile Include="..\src\AlgorithmsScene.cpp" />
+    <ClCompile Include="..\src\Astar.cpp" />
+    <ClCompile Include="..\src\ModifiedAStar.cpp" />
     <ClCompile Include="..\src\BFS.cpp" />
     <ClCompile Include="..\src\Dijkstra.cpp" />
     <ClCompile Include="..\src\Graph.cpp" />
@@ -141,14 +143,16 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Pathfinding.cpp" />
     <ClCompile Include="..\src\PathFollowing.cpp" />
-    <ClCompile Include="..\src\ScenePathFindingMouse.cpp" />
+    <ClCompile Include="..\src\CoinBattleScene.cpp" />
     <ClCompile Include="..\src\SDL_SimpleApp.cpp" />
     <ClCompile Include="..\src\Seek.cpp" />
     <ClCompile Include="..\src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Agent.h" />
-    <ClInclude Include="..\src\AStar.h" />
+    <ClInclude Include="..\src\AlgorithmsScene.h" />
+    <ClInclude Include="..\src\Astar.h" />
+    <ClInclude Include="..\src\ModifiedAStar.h" />
     <ClInclude Include="..\src\BFS.h" />
     <ClInclude Include="..\src\Dijkstra.h" />
     <ClInclude Include="..\src\Graph.h" />
@@ -157,7 +161,7 @@
     <ClInclude Include="..\src\Path.h" />
     <ClInclude Include="..\src\Pathfinding.h" />
     <ClInclude Include="..\src\PathFollowing.h" />
-    <ClInclude Include="..\src\ScenePathFindingMouse.h" />
+    <ClInclude Include="..\src\CoinBattleScene.h" />
     <ClInclude Include="..\src\Seek.h" />
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\Scene.h" />

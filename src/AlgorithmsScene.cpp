@@ -1,8 +1,7 @@
-#include "ScenePathFindingMouse.h"
-
+#include "AlgorithmsScene.h"
 using namespace std;
 
-ScenePathFindingMouse::ScenePathFindingMouse()
+AlgorithmsScene::AlgorithmsScene()
 {
 	draw_grid = false;
 	maze = new Grid("../res/maze.csv");
@@ -10,9 +9,11 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 	graph = Graph(maze->terrain);
 
 	loadTextures("../res/maze.png", "../res/coin.png");
-	srand((unsigned int)time(NULL));
+	
+	// We don't do that here
+	// srand((unsigned int)time(NULL));
 
-	Agent* agent = new Agent(graph);
+	Agent* agent = new Agent(graph, false);
 	agent->loadSpriteTexture("../res/soldier.png", 4);
 	agent->setBehavior(new PathFollowing);
 	agent->setTarget(Vector2D(-20, -20));
@@ -30,14 +31,14 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 	{
 		std::cout << "Instancia " << count << ":" << std::endl;
 		count++;
-		a->setPosition(maze->cell2pix(rand_cell));
+		a->setPosition(cell2pix(rand_cell));
 		a->clearPath();
 		a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
 
 	}
 }
 
-ScenePathFindingMouse::~ScenePathFindingMouse()
+AlgorithmsScene::~AlgorithmsScene()
 {
 	if (background_texture)
 		SDL_DestroyTexture(background_texture);
@@ -50,16 +51,19 @@ ScenePathFindingMouse::~ScenePathFindingMouse()
 	}
 }
 
-void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
+void AlgorithmsScene::update(float dtime, SDL_Event* event)
 {
 	/* Keyboard & Mouse events */
 	switch (event->type) {
 	case SDL_KEYDOWN:
-		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
+		if (event->key.keysym.scancode == SDL_SCANCODE_G)
 			draw_grid = !draw_grid;
+		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
+			drawPaths = !drawPaths;
 		break;
 	case SDL_MOUSEMOTION:
 	case SDL_MOUSEBUTTONDOWN:
+
 		break;
 	default:
 		break;
@@ -69,26 +73,27 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 	{
 		a->update(dtime, event);
 		// if we have arrived to the coin, replace it in a random cell!
-		if ((maze->pix2cell(a->getPosition()) == coinPosition)) //
+		if ((pix2cell(a->getPosition()) == coinPosition))
 		{
 			std::cout << "Instancia " << count << ":" << std::endl;
 			count++;
 			ReplaceCoinPosition();
 			a->clearPath();
 			a->pathfinding->CalculatePath(a->graph, a->path, a->getPosition(), coinPosition);
-			
+
 		}
 	}
 }
 
-void ScenePathFindingMouse::ReplaceCoinPosition()
+void AlgorithmsScene::ReplaceCoinPosition()
 {
 	coinPosition = Vector2D(-1, -1);
-	while ((!maze->isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, maze->pix2cell(agents[0]->getPosition())) < 3))
+	// Gets a random VALID position in the maze
+	while ((!maze->isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, pix2cell(agents[0]->getPosition())) < 3))
 		coinPosition = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
 }
 
-void ScenePathFindingMouse::draw()
+void AlgorithmsScene::draw()
 {
 	drawMaze();
 	drawCoin();
@@ -108,16 +113,16 @@ void ScenePathFindingMouse::draw()
 
 	for (Agent* a : agents)
 	{
-		a->draw();
+		a->draw(drawPaths);
 	}
 }
 
-const char* ScenePathFindingMouse::getTitle()
+const char* AlgorithmsScene::getTitle()
 {
 	return "SDL Path Finding :: PathFinding Mouse Demo";
 }
 
-void ScenePathFindingMouse::drawMaze()
+void AlgorithmsScene::drawMaze()
 {
 	SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
 	SDL_Rect rect;
@@ -129,7 +134,7 @@ void ScenePathFindingMouse::drawMaze()
 			if (!maze->isValidCell(Vector2D((float)i, (float)j)))
 			{
 				SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
-				coords = maze->cell2pix(Vector2D((float)i, (float)j)) - Vector2D((float)CELL_SIZE / 2, (float)CELL_SIZE / 2);
+				coords = cell2pix(Vector2D((float)i, (float)j)) - Vector2D((float)CELL_SIZE / 2, (float)CELL_SIZE / 2);
 				rect = { (int)coords.x, (int)coords.y, CELL_SIZE, CELL_SIZE };
 				SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &rect);
 			}
@@ -142,15 +147,15 @@ void ScenePathFindingMouse::drawMaze()
 	//SDL_RenderCopy(TheApp::Instance()->getRenderer(), background_texture, NULL, NULL );
 }
 
-void ScenePathFindingMouse::drawCoin()
+void AlgorithmsScene::drawCoin()
 {
-	Vector2D coin_coords = maze->cell2pix(coinPosition);
+	Vector2D coin_coords = cell2pix(coinPosition);
 	int offset = CELL_SIZE / 2;
 	SDL_Rect dstrect = { (int)coin_coords.x - offset, (int)coin_coords.y - offset, CELL_SIZE, CELL_SIZE };
 	SDL_RenderCopy(TheApp::Instance()->getRenderer(), coin_texture, NULL, &dstrect);
 }
 
-bool ScenePathFindingMouse::loadTextures(char* filename_bg, char* filename_coin)
+bool AlgorithmsScene::loadTextures(char* filename_bg, char* filename_coin)
 {
 	SDL_Surface* image = IMG_Load(filename_bg);
 	if (!image) {
@@ -174,24 +179,3 @@ bool ScenePathFindingMouse::loadTextures(char* filename_bg, char* filename_coin)
 
 	return true;
 }
-
-//table[0].start = { 24, 13 };
-//table[1].start  = { 11, 22 };
-//table[2].start  = { 31, 2 };
-//table[3].start  = { 25, 11 };
-//table[4].start  = { 8, 7 };
-//table[5].start  = { 9, 19 };
-//table[6].start  = { 32, 18 };
-//table[7].start  = { 26, 7 };
-//table[8].start  = { 25, 21 };
-//table[9].start  = { 15, 9 };
-//table[10].start  = { 20, 1 };
-//table[11].start  = { 21, 7 };
-//table[12].start  = { 13, 2 };
-//table[13].start  = { 3, 4 };
-//table[14].start  = { 32, 6 };
-//table[15].start  = { 16, 16 };
-//table[16].start  = { 10, 17 };
-//table[17].start  = { 13, 11 };
-//table[18].start  = { 17, 20 };
-//table[19].start  = { 20, 23 };

@@ -1,25 +1,25 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
-
 #include "SDL_SimpleApp.h"
-#include "ScenePathFindingMouse.h"
+#include "AlgorithmsScene.h"
+#include "CoinBattleScene.h"
 
 using namespace std;
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
 	bool quit = false;
 	SDL_Event event;
-	
-	SDL_SimpleApp *app = SDL_SimpleApp::Instance();
 
-	Scene *curr_scene = new ScenePathFindingMouse;
+	SDL_SimpleApp* app = SDL_SimpleApp::Instance();
+
+	Scene* curr_scene = new AlgorithmsScene;
 	app->setWindowTitle(curr_scene->getTitle());
 
-	
+
 	if (argc > 1) {
-		cout << argv[1] << endl; 
+		cout << argv[1] << endl;
 		exit(0);
 	}
 
@@ -32,19 +32,19 @@ int main(int argc, char ** argv)
 		switch (event.type)
 		{
 		case SDL_KEYDOWN:
-			if (event.key.keysym.scancode == SDL_SCANCODE_1)
+			if (event.key.keysym.scancode == SDL_SCANCODE_1) // Change to exercice 1
 			{
 				delete(curr_scene);
-				curr_scene = new ScenePathFindingMouse;
+				curr_scene = new AlgorithmsScene;
 				app->setWindowTitle(curr_scene->getTitle());
 			}
-			if (event.key.keysym.scancode == SDL_SCANCODE_2)
+			if (event.key.keysym.scancode == SDL_SCANCODE_2) // Change to exercice 2
 			{
+				delete(curr_scene);
+				curr_scene = new CoinBattleScene;
+				app->setWindowTitle(curr_scene->getTitle());
 			}
-			if (event.key.keysym.scancode == SDL_SCANCODE_3)
-			{
-			}
-			if ((event.key.keysym.scancode == SDL_SCANCODE_Q) || (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE))
+			if ((event.key.keysym.scancode == SDL_SCANCODE_Q) || (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)) // quit
 			{
 				quit = true;
 			}
@@ -57,8 +57,6 @@ int main(int argc, char ** argv)
 			quit = true;
 			break;
 		}
-
 	}
-
 	return 0;
 }
