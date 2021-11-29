@@ -18,6 +18,7 @@ public:
 	ScenePathFindingMouse();
 	~ScenePathFindingMouse();
 	void update(float dtime, SDL_Event* event);
+	float CalculateDistance(Vector2D a, Vector2D b);
 	void draw();
 	const char* getTitle();
 

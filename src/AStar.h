@@ -12,7 +12,9 @@ private:
 		}
 	};
 	std::priority_queue < Graph::Node*, std::vector<Graph::Node*>, ComparePriority > frontier;
-	
+
+	const float alpha = 0.7;
+	const float beta = 0.3;
 
 public:
 	AStar();

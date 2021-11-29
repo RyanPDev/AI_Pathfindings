@@ -19,6 +19,25 @@ Graph::Graph(std::vector<std::vector<int>> terrain)
 	}
 	AddAllNeighbours();
 }
+void Graph::ResetAllWeights(std::vector<std::vector<int>> terrain)
+{
+	for (int i = 0; i < terrain.size(); i++)
+	{
+		for (int j = 0; j < terrain[i].size(); j++)
+		{
+			nodes[i][j]->weight = terrain[i][j];
+		}
+	}
+}
+void Graph::ChangeWeights(Vector2D position, float maxValue, float decreaseStrength, float minimumValue)
+{
+	position = pix2cell(position);
+	if (nodes[position.y][position.x] != nullptr && nodes[position.y][position.x]->isValid)
+	{
+		nodes[position.y][position.x]->cameFrom = nodes[position.y][position.x];
+		nodes[position.y][position.x]->ChangeWeightRecursive(maxValue,decreaseStrength,minimumValue);
+	}
+}
 
 void Graph::AddAllNeighbours()
 {

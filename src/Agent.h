@@ -46,6 +46,11 @@ private:
 	int sprite_num_frames;
 	int sprite_w;
 	int sprite_h;
+	Vector2D cell2pix(Vector2D cell)
+	{
+		int offset = CELL_SIZE / 2;
+		return Vector2D(cell.x * CELL_SIZE + offset, cell.y * CELL_SIZE + offset);
+	}
 
 public:
 	Agent(Graph);

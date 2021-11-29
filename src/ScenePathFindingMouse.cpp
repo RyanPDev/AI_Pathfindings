@@ -75,9 +75,22 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		break;
 	}
 
+	if (CalculateDistance(agents[0]->getPosition(), agents[1]->getPosition()) < 200.f) // falta hacer bien
+	{
+		agents[0]->graph.ResetAllWeights(maze->terrain);
+		agents[0]->graph.ChangeWeights(agents[1]->getPosition(), 100000, 20000, 10000);
+		agents[0]->ChooseNewGoal(coinsPosition);
+
+		agents[1]->graph.ResetAllWeights(maze->terrain);
+		agents[1]->graph.ChangeWeights(agents[0]->getPosition(), 100000, 20000, 10000);
+		agents[1]->ChooseNewGoal(coinsPosition);
+
+	}
+
 	for (Agent* a : agents)
 	{
 		a->update(dtime, event);
+		
 
 		if (maze->pix2cell(a->getPosition()) == *a->currentGoal)
 		{
@@ -91,9 +104,17 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 					break;
 				}
 			}
-			for (Agent* a_ : agents) a_->ChooseNewGoal(coinsPosition);
+			for (Agent* a_ : agents)
+			{
+				a_->graph.ResetAllWeights(maze->terrain);
+				a_->ChooseNewGoal(coinsPosition);
+			}
 		}
 	}
+}
+float ScenePathFindingMouse::CalculateDistance(Vector2D a, Vector2D b)
+{
+	return sqrt(pow(b.x-a.x,2)+(b.y-a.y,2));
 }
 
 void ScenePathFindingMouse::ReplaceCoinPosition(Vector2D& coinPosition)

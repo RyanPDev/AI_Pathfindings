@@ -13,13 +13,15 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 	float newCost = 0;
 	count = 1;
 	start = pix2cell(start);
-	while(graph.nodes[start.y][start.x] == nullptr)
+	while(graph.nodes[start.y][start.x] == nullptr || !graph.nodes[start.y][start.x]->isValid)
 	{
 		Vector2D aux = goal - start;
 		aux.Normalize();
-
+		aux.x = trunc(aux.x);
+		aux.y = trunc(aux.y);
 		start += aux;
 	}
+	Clear(frontier, graph);
 
 	graph.nodes[start.y][start.x]->cameFrom = graph.nodes[start.y][start.x];
 
@@ -35,7 +37,7 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 		if (pix2cell(current->position) == goal) //early exit
 		{
 			GetPath(path, start, current);
-			Clear(frontier, graph);
+			
 			break;
 		}
 
@@ -49,7 +51,7 @@ void AStar::CalculatePath(Graph graph, Path& path, Vector2D start, Vector2D goal
 				if (next->heuristic == 0)
 					next->heuristic = Heuristic(pix2cell(next->position), goal);
 
-				next->priority = newCost + next->heuristic;
+				next->priority = (newCost*alpha) + (next->heuristic*beta);
 				next->cameFrom = current;
 				frontier.push(next);
 			}
