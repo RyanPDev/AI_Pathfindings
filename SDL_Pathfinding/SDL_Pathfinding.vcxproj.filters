@@ -27,9 +27,6 @@
     <ClCompile Include="..\src\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ScenePathFindingMouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Seek.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,7 +51,16 @@
     <ClCompile Include="..\src\Greedy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\AStar.cpp">
+    <ClCompile Include="..\src\AlgorithmsScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CoinBattleScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ModifiedAStar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Astar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,9 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Path.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ScenePathFindingMouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Seek.h">
@@ -104,7 +107,16 @@
     <ClInclude Include="..\src\Greedy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\AStar.h">
+    <ClInclude Include="..\src\AlgorithmsScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\CoinBattleScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ModifiedAStar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Astar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

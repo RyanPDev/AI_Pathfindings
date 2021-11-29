@@ -3,6 +3,7 @@
 Pathfinding::Pathfinding() { count = 1; }
 Pathfinding::~Pathfinding() {}
 
+//Heuristic calculated that we use --> Diagonal Octile (8 ways)
 float Pathfinding::Heuristic(Vector2D node, Vector2D goal)
 {
 	float dx = abs(node.x - goal.x);
@@ -10,11 +11,7 @@ float Pathfinding::Heuristic(Vector2D node, Vector2D goal)
 	return D * (dx + dy) + (D2 - 2 * D) * std::min(dx, dy);
 }
 
-bool operator<(const Graph::Node& node1, Graph::Node& node2)
-{
-	return node1.weight > node2.weight;
-}
-
+//Once the algorithm has found the goal, we check the "camefrom" variable for each node from the goal to start and then reverse it on the path
 void Pathfinding::GetPath(Path& path, Vector2D start, Graph::Node* goal)
 {
 	Graph::Node* current = goal;

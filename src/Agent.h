@@ -12,7 +12,8 @@
 #include "BFS.h"
 #include "Dijkstra.h"
 #include "Greedy.h"
-#include "AStar.h"
+#include "ModifiedAStar.h"
+#include "Astar.h"
 
 class Agent
 {
@@ -53,7 +54,7 @@ private:
 	}
 
 public:
-	Agent(Graph);
+	Agent(Graph,bool);
 	~Agent();
 	Vector2D getPosition();
 	Vector2D getTarget();
@@ -74,9 +75,9 @@ public:
 	Vector2D getPathPoint(int idx);
 	void clearPath();
 	void update(float dtime, SDL_Event* event);
-	void draw();
+	void draw(bool);
 	bool loadSpriteTexture(char* filename, int num_frames = 1);
-
 	void ChooseNewGoal(std::vector<Vector2D*> coins);
+	bool isInVersusScene = false;
 
 };

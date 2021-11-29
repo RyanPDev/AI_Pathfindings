@@ -53,7 +53,6 @@ SDL_SimpleApp::~SDL_SimpleApp()
 
 SDL_Event SDL_SimpleApp::run(Scene *scene)
 {
-
 	SDL_Event event;
 	SDL_PollEvent(&event);
 

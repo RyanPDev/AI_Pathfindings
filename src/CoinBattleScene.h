@@ -11,32 +11,31 @@
 #include "Grid.h"
 #include "Graph.h"
 
-class ScenePathFindingMouse :
+class CoinBattleScene :
 	public Scene
 {
 public:
-	ScenePathFindingMouse();
-	~ScenePathFindingMouse();
+	CoinBattleScene();
+	~CoinBattleScene();
 	void update(float dtime, SDL_Event* event);
-	float CalculateDistance(Vector2D a, Vector2D b);
 	void draw();
 	const char* getTitle();
 
 private:
+	Grid* maze;
+	Graph graph;
+	bool draw_grid;
 	int count = 1;
-
 	std::vector<Agent*> agents;
 	const int NUM_AGENTS = 2;
 	const int MAX_COINS = 5;
-	std::vector<Vector2D*> coinsPosition;
-	void ReplaceCoinPosition(Vector2D&);
+	const float evasiveDistance = 64;
 
-	Grid* maze;
-	bool draw_grid;
-	Graph graph;
 
 	void drawMaze();
 	void drawCoin();
+	void ReplaceCoinPosition(Vector2D&);
+	std::vector<Vector2D*> coinsPosition;
 	SDL_Texture* background_texture;
 	SDL_Texture* coin_texture;
 	bool loadTextures(char* filename_bg, char* filename_coin);

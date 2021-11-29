@@ -1,8 +1,8 @@
-#include "ScenePathFindingMouse.h"
+#include "CoinBattleScene.h"
 
 using namespace std;
 
-ScenePathFindingMouse::ScenePathFindingMouse()
+CoinBattleScene::CoinBattleScene()
 {
 	draw_grid = false;
 	maze = new Grid("../res/maze.csv");
@@ -14,7 +14,7 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 
 	for (int i = 0; i < NUM_AGENTS; i++)
 	{
-		Agent* agent = new Agent(graph);
+		Agent* agent = new Agent(graph, true);
 		agent->loadSpriteTexture("../res/soldier.png", 4);
 		agent->setBehavior(new PathFollowing);
 		agent->setTarget(Vector2D(-20, -20));
@@ -39,15 +39,17 @@ ScenePathFindingMouse::ScenePathFindingMouse()
 		rand_cell = (-1, -1);
 		while (!maze->isValidCell(rand_cell))
 			rand_cell = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
+
 		std::cout << "Instancia " << count << ":" << std::endl;
 		count++;
+
 		// set agent position coords to the center of a random cell
-		a->setPosition(maze->cell2pix(rand_cell));
+		a->setPosition(cell2pix(rand_cell));
 		a->ChooseNewGoal(coinsPosition);
 	}
 }
 
-ScenePathFindingMouse::~ScenePathFindingMouse()
+CoinBattleScene::~CoinBattleScene()
 {
 	if (background_texture)
 		SDL_DestroyTexture(background_texture);
@@ -60,13 +62,15 @@ ScenePathFindingMouse::~ScenePathFindingMouse()
 	}
 }
 
-void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
+void CoinBattleScene::update(float dtime, SDL_Event* event)
 {
 	/* Keyboard & Mouse events */
 	switch (event->type) {
 	case SDL_KEYDOWN:
-		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
+		if (event->key.keysym.scancode == SDL_SCANCODE_G)
 			draw_grid = !draw_grid;
+		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
+			drawPaths = !drawPaths;
 		break;
 	case SDL_MOUSEMOTION:
 	case SDL_MOUSEBUTTONDOWN:
@@ -75,7 +79,8 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		break;
 	}
 
-	if (CalculateDistance(agents[0]->getPosition(), agents[1]->getPosition()) < 200.f) // falta hacer bien
+	//Checks distance between agents. If they're close enough, start modifiying weights around them so they can evade each other
+	if (CalculateDistance(agents[0]->getPosition(), agents[1]->getPosition()) < evasiveDistance)
 	{
 		agents[0]->graph.ResetAllWeights(maze->terrain);
 		agents[0]->graph.ChangeWeights(agents[1]->getPosition(), 100000, 20000, 10000);
@@ -84,15 +89,14 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		agents[1]->graph.ResetAllWeights(maze->terrain);
 		agents[1]->graph.ChangeWeights(agents[0]->getPosition(), 100000, 20000, 10000);
 		agents[1]->ChooseNewGoal(coinsPosition);
-
 	}
 
 	for (Agent* a : agents)
 	{
 		a->update(dtime, event);
-		
 
-		if (maze->pix2cell(a->getPosition()) == *a->currentGoal)
+
+		if (pix2cell(a->getPosition()) == *a->currentGoal)
 		{
 			std::cout << "Instancia " << count << ":" << std::endl;
 			count++;
@@ -112,23 +116,19 @@ void ScenePathFindingMouse::update(float dtime, SDL_Event* event)
 		}
 	}
 }
-float ScenePathFindingMouse::CalculateDistance(Vector2D a, Vector2D b)
-{
-	return sqrt(pow(b.x-a.x,2)+(b.y-a.y,2));
-}
 
-void ScenePathFindingMouse::ReplaceCoinPosition(Vector2D& coinPosition)
+void CoinBattleScene::ReplaceCoinPosition(Vector2D& coinPosition)
 {
 	coinPosition = Vector2D(-1, -1);
 	// set the coin in a random cell (but at least 3 cells far from the agent)
 
-	while ((!maze->isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, maze->pix2cell(agents[0]->getPosition())) < 3))
+	while ((!maze->isValidCell(coinPosition)) || (Vector2D::Distance(coinPosition, pix2cell(agents[0]->getPosition())) < 3))
 	{
 		coinPosition = Vector2D((float)(rand() % maze->getNumCellX()), (float)(rand() % maze->getNumCellY()));
 	}
 }
 
-void ScenePathFindingMouse::draw()
+void CoinBattleScene::draw()
 {
 	drawMaze();
 	drawCoin();
@@ -148,16 +148,16 @@ void ScenePathFindingMouse::draw()
 
 	for (Agent* a : agents)
 	{
-		a->draw();
+		a->draw(drawPaths); //We pass bool as a parameter to set visibility of paths to true or false with input from user
 	}
 }
 
-const char* ScenePathFindingMouse::getTitle()
+const char* CoinBattleScene::getTitle()
 {
 	return "SDL Path Finding :: PathFinding Mouse Demo";
 }
 
-void ScenePathFindingMouse::drawMaze()
+void CoinBattleScene::drawMaze()
 {
 	SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
 	SDL_Rect rect;
@@ -169,7 +169,7 @@ void ScenePathFindingMouse::drawMaze()
 			if (!maze->isValidCell(Vector2D((float)i, (float)j)))
 			{
 				SDL_SetRenderDrawColor(TheApp::Instance()->getRenderer(), 0, 0, 255, 255);
-				coords = maze->cell2pix(Vector2D((float)i, (float)j)) - Vector2D((float)CELL_SIZE / 2, (float)CELL_SIZE / 2);
+				coords = cell2pix(Vector2D((float)i, (float)j)) - Vector2D((float)CELL_SIZE / 2, (float)CELL_SIZE / 2);
 				rect = { (int)coords.x, (int)coords.y, CELL_SIZE, CELL_SIZE };
 				SDL_RenderFillRect(TheApp::Instance()->getRenderer(), &rect);
 			}
@@ -178,22 +178,20 @@ void ScenePathFindingMouse::drawMaze()
 			}
 		}
 	}
-	//Alternative: render a backgroud texture:
-	//SDL_RenderCopy(TheApp::Instance()->getRenderer(), background_texture, NULL, NULL );
 }
 
-void ScenePathFindingMouse::drawCoin()
+void CoinBattleScene::drawCoin()
 {
 	for (Vector2D* c : coinsPosition)
 	{
-		Vector2D coin_coords = maze->cell2pix(*c);
+		Vector2D coin_coords = cell2pix(*c);
 		int offset = CELL_SIZE / 2;
 		SDL_Rect dstrect = { (int)coin_coords.x - offset, (int)coin_coords.y - offset, CELL_SIZE, CELL_SIZE };
 		SDL_RenderCopy(TheApp::Instance()->getRenderer(), coin_texture, NULL, &dstrect);
 	}
 }
 
-bool ScenePathFindingMouse::loadTextures(char* filename_bg, char* filename_coin)
+bool CoinBattleScene::loadTextures(char* filename_bg, char* filename_coin)
 {
 	SDL_Surface* image = IMG_Load(filename_bg);
 	if (!image) {
