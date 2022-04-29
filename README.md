@@ -1,3 +1,3 @@
 # Pathfindings
 
-University AI Project by Ryan Palazón & Marc Romera
+University AI Project C++/SDL by Ryan Palazón & Marc Romera
